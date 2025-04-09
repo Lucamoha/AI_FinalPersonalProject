@@ -47,7 +47,13 @@ Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 
 ## II. Informed Search Algorithms
 ### 1. aStar – A* Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/03236232-9ebb-49a4-8b00-a4885c027a4a)|<p>Time: 0.010279600042849779s</p><p>Steps: 23</p>|
 ### 2. greedy – Greedy Best-First Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/16e8b254-43bf-45d4-972b-c76981cf251b)|<p>Time: 0.005781499901786447s</p><p>Steps: 79</p>
 ### 3. idaStar – Iterative Deepening A*
 
 ## III. Local Search Algorithms
