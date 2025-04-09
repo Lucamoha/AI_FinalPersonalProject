@@ -35,8 +35,15 @@ Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 | :--- | :--- |
 | ![](https://github.com/user-attachments/assets/2964a580-521b-43d3-b1e6-523e79e6b52d) |<p>Time: 0.5699903999920934s</p><p>Steps: 23</p>|
 ### 2. dfs – Depth-First Search
+**No Solution**
 ### 3. ucs – Uniform Cost Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/b7a98cda-93bb-4bfe-a3c0-a370a19e980d) |<p>Time: 0.33811870007775724s</p><p>Steps: 23</p>|
 ### 4. ids – Iterative Deepening Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/b788ce8e-82a2-43ce-a537-f029e27a5c95)|<p>Time: 0.24040450004395097s</p><p>Steps: 27</p>|
 
 ## II. Informed Search Algorithms
 ### 1. aStar – A* Search
