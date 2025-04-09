@@ -1,13 +1,14 @@
-import sys
 import heapq
 from collections import deque
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
 import time
+import random
+import math
 
 
-start = '265870431'
+start = '265087431'
 des = '123456780'
 
 moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -141,12 +142,29 @@ class Ui_MainWindow(object):
         self.btidaStar = QtWidgets.QPushButton(parent=self.centralwidget)
         self.btidaStar.setGeometry(QtCore.QRect(750, 170, 100, 30))
         self.btidaStar.setObjectName("btidaStar")
+        self.btSimpleHC = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btSimpleHC.setGeometry(QtCore.QRect(870, 170, 100, 30))
+        self.btSimpleHC.setObjectName("btSimpleHC")
+        self.btSAHC = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btSAHC.setGeometry(QtCore.QRect(750, 220, 100, 30))
+        self.btSAHC.setObjectName("btSAHC")
+        self.btStochasticHC = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btStochasticHC.setGeometry(QtCore.QRect(870, 220, 100, 30))
+        self.btStochasticHC.setObjectName("btStochasticHC")
+        self.btSimulatedAnnealing = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btSimulatedAnnealing.setGeometry(QtCore.QRect(750, 270, 100, 30))
+        self.btSimulatedAnnealing.setObjectName("btSimulatedAnnealing")
+        self.btBeamSearch = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btBeamSearch.setGeometry(QtCore.QRect(870, 270, 100, 30))
+        self.btBeamSearch.setObjectName("btBeamSearch")
+
         self.btStop = QtWidgets.QPushButton(parent=self.centralwidget)
         self.btStop.setGeometry(QtCore.QRect(870, 500, 100, 30))
         self.btStop.setObjectName("btStop")
         self.btPath = QtWidgets.QPushButton(parent=self.centralwidget)
         self.btPath.setGeometry(QtCore.QRect(750, 500, 100, 30))
         self.btPath.setObjectName("btPath")
+        
         
 
         # Chức năng nút
@@ -157,6 +175,11 @@ class Ui_MainWindow(object):
         self.btAStar.clicked.connect(lambda: (self.PuzzleWidget.solve(aStar), self._update()))
         self.btGreedy.clicked.connect(lambda: (self.PuzzleWidget.solve(greedy), self._update()))
         self.btidaStar.clicked.connect(lambda: (self.PuzzleWidget.solve(idaStar), self._update()))
+        self.btSimpleHC.clicked.connect(lambda: (self.PuzzleWidget.solve(SHC), self._update()))
+        self.btSAHC.clicked.connect(lambda: (self.PuzzleWidget.solve(SAHC), self._update()))
+        self.btStochasticHC.clicked.connect(lambda: (self.PuzzleWidget.solve(StochasticHC), self._update()))
+        self.btSimulatedAnnealing.clicked.connect(lambda: (self.PuzzleWidget.solve(SimulatedAnnealing), self._update()))
+        self.btBeamSearch.clicked.connect(lambda: (self.PuzzleWidget.solve(BeamSearch), self._update()))
         self.btPath.clicked.connect(lambda: (luuPath(), self._update("Save to path.txt")))
         self.btStop.clicked.connect(self.PuzzleWidget.stop_solution)
 
@@ -209,6 +232,11 @@ class Ui_MainWindow(object):
         self.btidaStar.setStyleSheet(button_style)
         self.btStop.setStyleSheet(button_style)
         self.btPath.setStyleSheet(button_style)
+        self.btSimpleHC.setStyleSheet(button_style)
+        self.btStochasticHC.setStyleSheet(button_style)
+        self.btSimulatedAnnealing.setStyleSheet(button_style)
+        self.btBeamSearch.setStyleSheet(button_style)
+        self.btSAHC.setStyleSheet(button_style)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -225,6 +253,11 @@ class Ui_MainWindow(object):
         self.btidaStar.setText(_translate("MainWindow", "IDA*"))
         self.btStop.setText(_translate("MainWindow", "Stop"))
         self.btPath.setText(_translate("MainWindow", "Xuất Path"))
+        self.btSimpleHC.setText(_translate("MainWindow", "SimpleHC"))
+        self.btSAHC.setText(_translate("MainWindow", "SAHC"))
+        self.btStochasticHC.setText(_translate("MainWindow", "StochasticHC"))
+        self.btSimulatedAnnealing.setText(_translate("MainWindow", "SimAnn"))
+        self.btBeamSearch.setText(_translate("MainWindow", "BeamSearch"))
         self.labelStart.setText(_translate("MainWindow", "Start"))
         self.labelDes.setText(_translate("MainWindow", "Des"))
     
@@ -251,6 +284,8 @@ def bfs(start: str = start, des: str = des):
 
     while queue:
         state, path = queue.popleft()
+        if len(path) > limitStep:
+            break
         if state == des:
             return path + [state]
 
@@ -382,10 +417,14 @@ def mahattan(i: int, start = start, des = des):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
+def heuristic(state):
+    return sum(mahattan(int(c), state, des) for c in state if c != '0')
+
+
 def greedy(start=start, des=des):
     visited = set()
     parent = {}
-    pq = [(sum(mahattan(int(c), start, des) for c in start if c != '0'), start)]
+    pq = [(heuristic(start), start)]
     visited.add(start)
     parent[start] = None
 
@@ -410,7 +449,7 @@ def greedy(start=start, des=des):
 
                 if new_state_str not in visited:
                     visited.add(new_state_str)
-                    h = sum(mahattan(int(c), new_state_str) for c in new_state_str if c != '0')
+                    h = heuristic(new_state_str)
                     heapq.heappush(pq, (h, new_state_str))
                     parent[new_state_str] = state
     
@@ -421,7 +460,7 @@ def aStar(start=start, des=des):
     visited = set()
     parent = {}
     g = {start: 0}  # g(n): Chi phí từ start đến state
-    pq = [(sum(mahattan(int(c), start, des) for c in start if c != '0'), start)]
+    pq = [(heuristic(start), start)]
     parent[start] = None
 
     while pq:
@@ -447,7 +486,7 @@ def aStar(start=start, des=des):
                 new_state_str = ''.join(new_state)
 
                 new_g = g[state] + 1  # Chi phí từ start đến new_state
-                h = sum(mahattan(int(c), new_state_str, des) for c in new_state_str if c != '0')
+                h = heuristic(new_state_str)
                 f = new_g + h
 
                 if new_state_str not in visited or new_g < g.get(new_state_str, float('inf')):
@@ -461,7 +500,7 @@ def aStar(start=start, des=des):
 def idaStar(start=start, des=des):
     def search(path, g, bound):
         state = path[-1]
-        f = g + sum(mahattan(int(c), state, des) for c in state if c != '0')
+        f = g + heuristic(state)
         if f > bound:
             return f
         if state == des:
@@ -486,7 +525,7 @@ def idaStar(start=start, des=des):
                     path.pop()
         return min_bound
 
-    bound = sum(mahattan(int(c), start, des) for c in start if c != '0')
+    bound = heuristic(start)
     path = [start]
     while True:
         t = search(path, 0, bound)
@@ -495,6 +534,179 @@ def idaStar(start=start, des=des):
         if t == float('inf'):
             return []
         bound = t
+
+
+def SHC(start=start, des=des): # Simple Hill Climbing
+    path = []
+    current = start
+
+    while True:
+        path.append(current)
+
+        if current == des:
+            return path
+        
+        if len(path) > limitStep:
+            return []
+        
+        neighbors = []
+        index = current.index('0')
+        x, y = divmod(index, 3)
+        for dx, dy in moves:
+            new_x, new_y = x + dx, y + dy
+            if 0 <= new_x < 3 and 0 <= new_y < 3:
+                new_index = new_x * 3 + new_y
+                new_state = list(current)
+                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
+                new_state_str = ''.join(new_state)
+                neighbors.append(new_state_str)
+
+        current = random.choice(neighbors)
+
+
+def SAHC(start=start, des=des): # Steepest Ascent-Hill Climbing
+    current = start
+    if current == des:
+        return [current]
+    
+    h = heuristic(current)
+    neighbors = []
+    index = current.index('0')
+    x, y = divmod(index, 3)
+    for dx, dy in moves:
+        new_x, new_y = x + dx, y + dy
+        if 0 <= new_x < 3 and 0 <= new_y < 3:
+            new_index = new_x * 3 + new_y
+            new_state = list(current)
+            new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
+            new_state_str = ''.join(new_state)
+            neighbors.append(new_state_str)
+
+    nh = []
+    for state in neighbors:
+        nh.append(heuristic(state))
+
+    if min(nh) < h:
+        next_state = SAHC(neighbors[nh.index(min(nh))], des)
+        if next_state:
+            return [current] + next_state
+
+    return []
+
+
+def StochasticHC(start=start, des=des): # Stochastic Hill Climbing
+    current = start
+    if current == des:
+        return [current]
+    
+    h = heuristic(current)
+    neighbors = []
+    index = current.index('0')
+    x, y = divmod(index, 3)
+    for dx, dy in moves:
+        new_x, new_y = x + dx, y + dy
+        if 0 <= new_x < 3 and 0 <= new_y < 3:
+            new_index = new_x * 3 + new_y
+            new_state = list(current)
+            new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
+            new_state_str = ''.join(new_state)
+            neighbors.append(new_state_str)
+
+    nh = []
+    for state in neighbors:
+        nh.append(heuristic(state))
+
+    better_neighbors = []
+    for i in range(len(neighbors)):
+        if nh[i] < h:
+            better_neighbors.append(neighbors[i])
+
+    while better_neighbors:
+        next_state = random.choice(better_neighbors)
+        better_neighbors.remove(next_state)
+        result = StochasticHC(next_state, des)
+        if result:
+            return [current] + result
+
+    return []
+
+
+def SimulatedAnnealing(start=start, des=des, max_iterations=10000, initial_temp=100.0, cooling_rate=0.995):
+    current = start
+    current_cost = heuristic(current)
+    solution_path = [current]
+    temperature = initial_temp
+
+    for iteration in range(max_iterations):
+        if current == des:
+            return solution_path
+
+        index = current.index('0')
+        x, y = divmod(index, 3)
+        neighbors = []
+
+        for dx, dy in moves:
+            new_x, new_y = x + dx, y + dy
+            if 0 <= new_x < 3 and 0 <= new_y < 3:
+                new_index = new_x * 3 + new_y
+                new_state = list(current)
+                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
+                neighbors.append(''.join(new_state))
+
+        if not neighbors:
+            break
+
+        next_state = random.choice(neighbors)
+        next_cost = heuristic(next_state)
+        delta = next_cost - current_cost
+
+        if delta < 0 or random.random() < math.exp(-delta / temperature):
+            current = next_state
+            current_cost = next_cost
+            solution_path.append(current)
+
+        temperature *= cooling_rate
+
+    return []
+
+
+def BeamSearch(start=start, des=des, beam_width=3):
+    from heapq import heappush, heappop
+
+    queue = [(heuristic(start), [start])]
+    visited = set()
+
+    while queue:
+        new_queue = []
+        count = 0
+
+        while queue and count < beam_width:
+            _, path = heappop(queue)
+            state = path[-1]
+
+            if state == des:
+                return path
+
+            visited.add(state)
+            index = state.index('0')
+            x, y = divmod(index, 3)
+
+            for dx, dy in moves:
+                new_x, new_y = x + dx, y + dy
+                if 0 <= new_x < 3 and 0 <= new_y < 3:
+                    new_index = new_x * 3 + new_y
+                    new_state = list(state)
+                    new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
+                    new_state_str = ''.join(new_state)
+
+                    if new_state_str not in visited:
+                        new_path = path + [new_state_str]
+                        heappush(new_queue, (heuristic(new_state_str), new_path))
+            count += 1
+
+        queue = sorted(new_queue)[:beam_width]
+
+    return []
 
 
 def timer(func):
@@ -507,13 +719,21 @@ def timer(func):
         totalTime += elapsed_time
         return result
     return wrapper
+# Nhóm 1
 bfs = timer(bfs)
 dfs = timer(dfs)
 ucs = timer(ucs)
 ids = timer(ids)
+# Nhóm 2
 aStar = timer(aStar)
 greedy = timer(greedy)
 idaStar = timer(idaStar)
+# Nhóm 3
+SHC = timer(SHC)
+SAHC = timer(SAHC)
+StochasticHC = timer(StochasticHC)
+SimulatedAnnealing = timer(SimulatedAnnealing)
+BeamSearch = timer(BeamSearch)
 
 
 if __name__ == "__main__":
