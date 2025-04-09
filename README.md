@@ -31,6 +31,9 @@ Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 
 ## I. Uninformed Search Algorithms
 ### 1. bfs – Breadth-First Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/2964a580-521b-43d3-b1e6-523e79e6b52d) |<p>Time: 0.5699903999920934s</p><p>Steps: 23</p>|
 ### 2. dfs – Depth-First Search
 ### 3. ucs – Uniform Cost Search
 ### 4. ids – Iterative Deepening Search
