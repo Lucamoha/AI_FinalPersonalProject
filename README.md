@@ -53,8 +53,11 @@ Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 ### 2. greedy – Greedy Best-First Search
 |Các trạng thái|Hiệu suất thuật toán|
 | :--- | :--- |
-| ![](https://github.com/user-attachments/assets/16e8b254-43bf-45d4-972b-c76981cf251b)|<p>Time: 0.005781499901786447s</p><p>Steps: 79</p>
+| ![](https://github.com/user-attachments/assets/16e8b254-43bf-45d4-972b-c76981cf251b)|<p>Time: 0.005781499901786447s</p><p>Steps: 79</p>|
 ### 3. idaStar – Iterative Deepening A*
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/a2ff7efb-32d7-42f1-add4-a798ecb408d1)|<p>Time: 0.018657599999983177s</p><p>Steps: 23</p>|
 
 ## III. Local Search Algorithms
 ### 1. SHC – Simple Hill Climbing
