@@ -30,6 +30,7 @@ python main.py
 ```
 
 2. Giao diện chương trình:
+![](https://github.com/user-attachments/assets/37315ffd-c1d2-4b36-a366-6ea50418ac46)
 - Phía trên bên trái: Hiển thị trạng thái bắt đầu (Start)
 - Phía dưới bên trái: Hiển thị trạng thái đích (Des)
 - Ở giữa: Hiển thị quá trình giải
@@ -43,9 +44,9 @@ python main.py
 
 4. Các thuật toán có sẵn:
 - Nhóm 1 - Uninformed Search: BFS, DFS, UCS, IDS
-- Nhóm 2 - Informed Search: A*, Greedy, IDA*
-- Nhóm 3 - Local Search: SimpleHC, SAHC, StochasticHC, SimAnn, BeamSearch
-- Nhóm 4: Genetic, AndOrGS
+- Nhóm 2 - Informed Search: A*, Greedy, Iterative Deepening A*
+- Nhóm 3 - Local Search: Simple Hill Climbing, Steepest Ascent Hill Climbing, Stochastic Hill Climbing, Simulated Annealing, Beam Search
+- Nhóm 4: Genetic, And-Or Graph Search
 
 ### Lưu ý
 - Một số thuật toán có thể mất nhiều thời gian để tìm ra lời giải hoặc không tìm được lời giải do đặc tính của thuật toán
@@ -72,7 +73,7 @@ python main.py
   - [1. SHC – Simple Hill Climbing](#1-shc--simple-hill-climbing)
   - [2. SAHC – Steepest Ascent Hill Climbing](#2-sahc--steepest-ascent-hill-climbing)
   - [3. StochasticHC – Stochastic Hill Climbing](#3-stochastichc--stochastic-hill-climbing)
-  - [4. SimAnn – SimulatedAnnealing](#4-simann--simulatedannealing)
+  - [4. SimAnn – Simulated Annealing](#4-simann--simulated-annealing)
   - [5. BeamSearch – Beam Search](#5-beamsearch--beam-search)
 
 ## I. Uninformed Search Algorithms
@@ -107,7 +108,11 @@ python main.py
 
 ## III. Local Search Algorithms
 ### 1. SHC – Simple Hill Climbing
+**No Solution**
 ### 2. SAHC – Steepest Ascent Hill Climbing
+**No Solution**
 ### 3. StochasticHC – Stochastic Hill Climbing
-### 4. SimAnn – SimulatedAnnealing
+**No Solution**
+### 4. SimAnn – Simulated Annealing
+**No Solution**
 ### 5. BeamSearch – Beam Search
