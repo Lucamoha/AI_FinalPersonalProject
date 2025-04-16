@@ -52,7 +52,7 @@ python main.py
 - Có thể điều chỉnh tốc độ hiển thị bằng cách thay đổi giá trị DELAY trong file main.py
 
 
-Trạng thái bắt đầu, trạng thái kết thúc minh họa:
+## Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 |Trạng thái bắt đầu|Trạng thái kết thúc|
 | :--- | :--- |
 | ![](https://github.com/user-attachments/assets/fe5efcee-6b20-48c7-9a6f-ba04268521a6) | ![](https://github.com/user-attachments/assets/7d3ef320-6683-4952-aaf0-5a59ef51c545) |
