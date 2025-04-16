@@ -1,10 +1,56 @@
-
 # AI_FinalPersonalProject
 
 ## Giới thiệu
 Dự án nhằm mục tiêu nghiên cứu, đánh giá hiệu suất và triển khai các thuật toán tìm kiếm để giải bài toán cổ điển **8-puzzle** – một trò chơi logic với mục tiêu sắp xếp lại các ô số từ trạng thái ban đầu về trạng thái đích thông qua các phép di chuyển hợp lệ.
 Giao diện đồ họa (GUI) được xây dựng bằng thư viện **PyQt6**.
 > Dự án được hoàn thiện bởi [Trần Triều Dương](https://github.com/Lucamoha)
+
+## Hướng dẫn cài đặt và sử dụng
+
+### Yêu cầu hệ thống
+- Python 3.8 trở lên
+- pip (Python package installer)
+
+### Cài đặt
+1. Clone repository về máy:
+```bash
+git clone https://github.com/Lucamoha/AI_FinalPersonalProject.git
+cd AI_FinalPersonalProject
+```
+
+2. Cài đặt các thư viện cần thiết:
+```bash
+pip install -r requirements.txt
+```
+
+### Cách sử dụng
+1. Chạy chương trình:
+```bash
+python main.py
+```
+
+2. Giao diện chương trình:
+- Phía trên bên trái: Hiển thị trạng thái bắt đầu (Start)
+- Phía dưới bên trái: Hiển thị trạng thái đích (Des)
+- Ở giữa: Hiển thị quá trình giải
+- Bên phải: Các nút bấm cho từng thuật toán
+- Phía dưới: Hiển thị kết quả (thời gian, số bước, đường đi)
+
+3. Các chức năng:
+- Chọn một trong các thuật toán bằng cách nhấn vào nút tương ứng
+- Nút "Stop": Dừng quá trình giải và đưa puzzle về trạng thái ban đầu
+- Nút "Xuất Path": Lưu kết quả vào file path.txt
+
+4. Các thuật toán có sẵn:
+- Nhóm 1 - Uninformed Search: BFS, DFS, UCS, IDS
+- Nhóm 2 - Informed Search: A*, Greedy, IDA*
+- Nhóm 3 - Local Search: SimpleHC, SAHC, StochasticHC, SimAnn, BeamSearch
+- Nhóm 4: Genetic, AndOrGS
+
+### Lưu ý
+- Một số thuật toán có thể mất nhiều thời gian để tìm ra lời giải hoặc không tìm được lời giải do đặc tính của thuật toán
+- Có thể điều chỉnh tốc độ hiển thị bằng cách thay đổi giá trị DELAY trong file main.py
+
 
 Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 |Trạng thái bắt đầu|Trạng thái kết thúc|
