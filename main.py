@@ -1,19 +1,26 @@
-import heapq
-from collections import deque
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
 import time
-import random
-import math
+from algorithm.BFS import bfs
+from algorithm.DFS import dfs
+from algorithm.UCS import ucs
+from algorithm.IDS import ids
+from algorithm.Greedy import greedy
+from algorithm.AStar import aStar
+from algorithm.IDAStar import idaStar
+from algorithm.SimpleHC import SHC
+from algorithm.SteepestAscentHC import SAHC
+from algorithm.StochasticHC import StochasticHC
+from algorithm.SimulatedAnnealing import SimulatedAnnealing
+from algorithm.BeamSearch import BeamSearch
+from algorithm.Genetic import Genetic
+from algorithm.AndOrGraphSearch import AndOrGraphSearch
 
 
 start = '265087431'
 des = '123456780'
 
-moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-limitStep = 10000
 DELAY = 500 #ms
 totalTime = 0
 data = ""
@@ -157,6 +164,12 @@ class Ui_MainWindow(object):
         self.btBeamSearch = QtWidgets.QPushButton(parent=self.centralwidget)
         self.btBeamSearch.setGeometry(QtCore.QRect(870, 270, 100, 30))
         self.btBeamSearch.setObjectName("btBeamSearch")
+        self.btGenetic = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btGenetic.setGeometry(QtCore.QRect(750, 320, 100, 30))
+        self.btGenetic.setObjectName("btGenetic")
+        self.btAndOrGS = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btAndOrGS.setGeometry(QtCore.QRect(870, 320, 100, 30))
+        self.btAndOrGS.setObjectName("btAndOrGS")
 
         self.btStop = QtWidgets.QPushButton(parent=self.centralwidget)
         self.btStop.setGeometry(QtCore.QRect(870, 500, 100, 30))
@@ -180,6 +193,8 @@ class Ui_MainWindow(object):
         self.btStochasticHC.clicked.connect(lambda: (self.PuzzleWidget.solve(StochasticHC), self._update()))
         self.btSimulatedAnnealing.clicked.connect(lambda: (self.PuzzleWidget.solve(SimulatedAnnealing), self._update()))
         self.btBeamSearch.clicked.connect(lambda: (self.PuzzleWidget.solve(BeamSearch), self._update()))
+        self.btGenetic.clicked.connect(lambda: (self.PuzzleWidget.solve(Genetic), self._update()))
+        self.btAndOrGS.clicked.connect(lambda: (self.PuzzleWidget.solve(AndOrGraphSearch), self._update()))
         self.btPath.clicked.connect(lambda: (luuPath(), self._update("Save to path.txt")))
         self.btStop.clicked.connect(self.PuzzleWidget.stop_solution)
 
@@ -237,6 +252,8 @@ class Ui_MainWindow(object):
         self.btSimulatedAnnealing.setStyleSheet(button_style)
         self.btBeamSearch.setStyleSheet(button_style)
         self.btSAHC.setStyleSheet(button_style)
+        self.btGenetic.setStyleSheet(button_style)
+        self.btAndOrGS.setStyleSheet(button_style)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -258,6 +275,8 @@ class Ui_MainWindow(object):
         self.btStochasticHC.setText(_translate("MainWindow", "StochasticHC"))
         self.btSimulatedAnnealing.setText(_translate("MainWindow", "SimAnn"))
         self.btBeamSearch.setText(_translate("MainWindow", "BeamSearch"))
+        self.btGenetic.setText(_translate("MainWindow", "Genetic"))
+        self.btAndOrGS.setText(_translate("MainWindow", "AndOrGS"))
         self.labelStart.setText(_translate("MainWindow", "Start"))
         self.labelDes.setText(_translate("MainWindow", "Des"))
     
@@ -278,437 +297,6 @@ def luuPath():
         f.write(data)
 
 
-def bfs(start: str = start, des: str = des):
-    queue = deque([(start, [])])
-    visited = set()
-
-    while queue:
-        state, path = queue.popleft()
-        if len(path) > limitStep:
-            break
-        if state == des:
-            return path + [state]
-
-        visited.add(state)
-        index = state.index('0')
-        x, y = divmod(index, 3)
-
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-
-                if new_state_str not in visited:
-                    queue.append((new_state_str, path + [state]))
-
-    return []
-
-
-def dfs(start: str = start, des: str = des):
-    stack = [(start, [])]
-    visited = set()
-
-    while stack:
-        state, path = stack.pop()
-        if len(path) > limitStep:
-            break
-        if state == des:
-            return path + [state]
-
-        visited.add(state)
-        index = state.index('0')
-        x, y = divmod(index, 3)
-
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-
-                if new_state_str not in visited:
-                    stack.append((new_state_str, path + [state]))
-
-    return []
-
-
-def ucs(start=start, des=des):
-    visited = set()
-    parent = {}
-    pq = [(0, start)]
-    visited.add(start)
-    parent[start] = None
-
-    while pq:
-        cost, state = heapq.heappop(pq)
-        if state == des:
-            solution = []
-            while state is not None:
-                solution.append(state)
-                state = parent[state]
-            return solution[::-1]
-
-        index = state.index('0')
-        x, y = divmod(index, 3)
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-
-                if new_state_str not in visited:
-                    visited.add(new_state_str)
-                    heapq.heappush(pq, (cost + 1, new_state_str))
-                    parent[new_state_str] = state
-    
-    return []
-
-
-def dls(state, depth, visited, parent, des):
-    if depth == 0:
-        return state == des
-    if state in visited:
-        return False
-
-    visited.add(state)
-
-    index = state.index('0')
-    x, y = divmod(index, 3)
-    for dx, dy in moves:
-        new_x, new_y = x + dx, y + dy
-        if 0 <= new_x < 3 and 0 <= new_y < 3:
-            new_index = new_x * 3 + new_y
-            new_state = list(state)
-            new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-            new_state_str = ''.join(new_state)
-
-            if new_state_str not in visited:
-                parent[new_state_str] = state
-                if dls(new_state_str, depth - 1, visited, parent, des):
-                    return True
-
-    return False
-
-
-def ids(start = start, des = start):
-    depth = 0
-    while True:
-        visited = set()
-        parent = {start: None}
-        if dls(start, depth, visited, parent, des):
-            solution = []
-            state = des
-            while state is not None:
-                solution.append(state)
-                state = parent.get(state)
-            return solution[::-1]
-        depth += 1
-
-
-def mahattan(i: int, start = start, des = des):
-    x1, y1 = divmod(start.index(str(i)), 3)
-    x2, y2 = divmod(des.index(str(i)), 3)
-    return abs(x1 - x2) + abs(y1 - y2)
-
-
-def heuristic(state):
-    return sum(mahattan(int(c), state, des) for c in state if c != '0')
-
-
-def greedy(start=start, des=des):
-    visited = set()
-    parent = {}
-    pq = [(heuristic(start), start)]
-    visited.add(start)
-    parent[start] = None
-
-    while pq:
-        _, state = heapq.heappop(pq)
-        if state == des:
-            solution = []
-            while state is not None:
-                solution.append(state)
-                state = parent[state]
-            return solution[::-1]
-
-        index = state.index('0')
-        x, y = divmod(index, 3)
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-
-                if new_state_str not in visited:
-                    visited.add(new_state_str)
-                    h = heuristic(new_state_str)
-                    heapq.heappush(pq, (h, new_state_str))
-                    parent[new_state_str] = state
-    
-    return []
-
-
-def aStar(start=start, des=des):
-    visited = set()
-    parent = {}
-    g = {start: 0}  # g(n): Chi phí từ start đến state
-    pq = [(heuristic(start), start)]
-    parent[start] = None
-
-    while pq:
-        _, state = heapq.heappop(pq)
-
-        if state == des:
-            solution = []
-            while state is not None:
-                solution.append(state)
-                state = parent[state]
-            return solution[::-1]
-
-        visited.add(state)
-        index = state.index('0')
-        x, y = divmod(index, 3)
-
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-
-                new_g = g[state] + 1  # Chi phí từ start đến new_state
-                h = heuristic(new_state_str)
-                f = new_g + h
-
-                if new_state_str not in visited or new_g < g.get(new_state_str, float('inf')):
-                    g[new_state_str] = new_g
-                    heapq.heappush(pq, (f, new_state_str))
-                    parent[new_state_str] = state
-    
-    return []
-
-
-def idaStar(start=start, des=des):
-    def search(path, g, bound):
-        state = path[-1]
-        f = g + heuristic(state)
-        if f > bound:
-            return f
-        if state == des:
-            return path
-        min_bound = float('inf')
-        index = state.index('0')
-        x, y = divmod(index, 3)
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(state)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-                if new_state_str not in path:
-                    path.append(new_state_str)
-                    t = search(path, g + 1, bound)
-                    if isinstance(t, list):
-                        return t
-                    if t < min_bound:
-                        min_bound = t
-                    path.pop()
-        return min_bound
-
-    bound = heuristic(start)
-    path = [start]
-    while True:
-        t = search(path, 0, bound)
-        if isinstance(t, list):
-            return t
-        if t == float('inf'):
-            return []
-        bound = t
-
-
-def SHC(start=start, des=des): # Simple Hill Climbing
-    path = []
-    current = start
-
-    while True:
-        path.append(current)
-
-        if current == des:
-            return path
-        
-        if len(path) > limitStep:
-            return []
-        
-        neighbors = []
-        index = current.index('0')
-        x, y = divmod(index, 3)
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(current)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                new_state_str = ''.join(new_state)
-                neighbors.append(new_state_str)
-
-        current = random.choice(neighbors)
-
-
-def SAHC(start=start, des=des): # Steepest Ascent-Hill Climbing
-    current = start
-    if current == des:
-        return [current]
-    
-    h = heuristic(current)
-    neighbors = []
-    index = current.index('0')
-    x, y = divmod(index, 3)
-    for dx, dy in moves:
-        new_x, new_y = x + dx, y + dy
-        if 0 <= new_x < 3 and 0 <= new_y < 3:
-            new_index = new_x * 3 + new_y
-            new_state = list(current)
-            new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-            new_state_str = ''.join(new_state)
-            neighbors.append(new_state_str)
-
-    nh = []
-    for state in neighbors:
-        nh.append(heuristic(state))
-
-    if min(nh) < h:
-        next_state = SAHC(neighbors[nh.index(min(nh))], des)
-        if next_state:
-            return [current] + next_state
-
-    return []
-
-
-def StochasticHC(start=start, des=des): # Stochastic Hill Climbing
-    current = start
-    if current == des:
-        return [current]
-    
-    h = heuristic(current)
-    neighbors = []
-    index = current.index('0')
-    x, y = divmod(index, 3)
-    for dx, dy in moves:
-        new_x, new_y = x + dx, y + dy
-        if 0 <= new_x < 3 and 0 <= new_y < 3:
-            new_index = new_x * 3 + new_y
-            new_state = list(current)
-            new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-            new_state_str = ''.join(new_state)
-            neighbors.append(new_state_str)
-
-    nh = []
-    for state in neighbors:
-        nh.append(heuristic(state))
-
-    better_neighbors = []
-    for i in range(len(neighbors)):
-        if nh[i] < h:
-            better_neighbors.append(neighbors[i])
-
-    while better_neighbors:
-        next_state = random.choice(better_neighbors)
-        better_neighbors.remove(next_state)
-        result = StochasticHC(next_state, des)
-        if result:
-            return [current] + result
-
-    return []
-
-
-def SimulatedAnnealing(start=start, des=des, max_iterations=10000, initial_temp=100.0, cooling_rate=0.995):
-    current = start
-    current_cost = heuristic(current)
-    solution_path = [current]
-    temperature = initial_temp
-
-    for iteration in range(max_iterations):
-        if current == des:
-            return solution_path
-
-        index = current.index('0')
-        x, y = divmod(index, 3)
-        neighbors = []
-
-        for dx, dy in moves:
-            new_x, new_y = x + dx, y + dy
-            if 0 <= new_x < 3 and 0 <= new_y < 3:
-                new_index = new_x * 3 + new_y
-                new_state = list(current)
-                new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                neighbors.append(''.join(new_state))
-
-        if not neighbors:
-            break
-
-        next_state = random.choice(neighbors)
-        next_cost = heuristic(next_state)
-        delta = next_cost - current_cost
-
-        if delta < 0 or random.random() < math.exp(-delta / temperature):
-            current = next_state
-            current_cost = next_cost
-            solution_path.append(current)
-
-        temperature *= cooling_rate
-
-    return []
-
-
-def BeamSearch(start=start, des=des, beam_width=3):
-    from heapq import heappush, heappop
-
-    queue = [(heuristic(start), [start])]
-    visited = set()
-
-    while queue:
-        new_queue = []
-        count = 0
-
-        while queue and count < beam_width:
-            _, path = heappop(queue)
-            state = path[-1]
-
-            if state == des:
-                return path
-
-            visited.add(state)
-            index = state.index('0')
-            x, y = divmod(index, 3)
-
-            for dx, dy in moves:
-                new_x, new_y = x + dx, y + dy
-                if 0 <= new_x < 3 and 0 <= new_y < 3:
-                    new_index = new_x * 3 + new_y
-                    new_state = list(state)
-                    new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
-                    new_state_str = ''.join(new_state)
-
-                    if new_state_str not in visited:
-                        new_path = path + [new_state_str]
-                        heappush(new_queue, (heuristic(new_state_str), new_path))
-            count += 1
-
-        queue = sorted(new_queue)[:beam_width]
-
-    return []
-
-
 def timer(func):
     def wrapper(*args, **kwargs):
         global totalTime
@@ -719,21 +307,24 @@ def timer(func):
         totalTime += elapsed_time
         return result
     return wrapper
-# Nhóm 1
+# Nhóm 1: Uninformed Search Algorithms
 bfs = timer(bfs)
 dfs = timer(dfs)
 ucs = timer(ucs)
 ids = timer(ids)
-# Nhóm 2
+# Nhóm 2: Informed Search Algorithms
 aStar = timer(aStar)
 greedy = timer(greedy)
 idaStar = timer(idaStar)
-# Nhóm 3
+# Nhóm 3: Local Search Algorithms
 SHC = timer(SHC)
 SAHC = timer(SAHC)
 StochasticHC = timer(StochasticHC)
 SimulatedAnnealing = timer(SimulatedAnnealing)
 BeamSearch = timer(BeamSearch)
+# Nhóm 4: 
+Genetic = timer(Genetic)
+AndOrGraphSearch = timer(AndOrGraphSearch)
 
 
 if __name__ == "__main__":
