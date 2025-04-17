@@ -1,11 +1,11 @@
 from algorithm.utils import *
 
-def AndOrGraphSearch(start: str, des: str):
-    def or_search(state, path):
+def AndOrGraphSearch(start: str, des: str, max_depth: int = 100):
+    def or_search(state, path, depth):
         if state == des:
             return [state]
 
-        if state in path:
+        if state in path or depth >= max_depth:
             return 'failure'
 
         index = state.index('0')
@@ -19,17 +19,20 @@ def AndOrGraphSearch(start: str, des: str):
                 new_state[index], new_state[new_index] = new_state[new_index], new_state[index]
                 new_state_str = ''.join(new_state)
 
+                if new_state_str in path:
+                    continue
+
                 results = [new_state_str]
-                plan = and_search(results, path + [state])
+                plan = and_search(results, path + [state], depth + 1)
                 if plan != 'failure':
                     return [state] + plan
 
         return 'failure'
 
-    def and_search(states, path):
+    def and_search(states, path, depth):
         full_plan = []
         for s in states:
-            subplan = or_search(s, path)
+            subplan = or_search(s, path, depth)
             if subplan == 'failure':
                 return 'failure'
             
@@ -40,8 +43,8 @@ def AndOrGraphSearch(start: str, des: str):
         return full_plan
 
     try:
-        plan = or_search(start, [])
+        plan = or_search(start, [], 0)
         return plan if plan != 'failure' else []
-    except:
+    except Exception as e:
         return []
 
