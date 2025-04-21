@@ -26,4 +26,8 @@ def SHC(start: str, des: str): # Simple Hill Climbing
                 new_state_str = ''.join(new_state)
                 neighbors.append(new_state_str)
 
-        current = random.choice(neighbors)
+        h = heuristic(current, des)
+        for state in neighbors:
+            if heuristic(state, des) < h:
+                current = state
+                break
