@@ -2,13 +2,13 @@ from algorithm.utils import *
 import random
 import math
 
-def SimulatedAnnealing(start: str, des: str, max_iterations=10000, initial_temp=100.0, cooling_rate=0.995):
+def SimulatedAnnealing(start: str, des: str, initial_temp=100.0, cooling_rate=0.995):
     current = start
     current_cost = heuristic(current, des)
     solution_path = [current]
     temperature = initial_temp
 
-    for iteration in range(max_iterations):
+    for i in range(limitStep):
         if current == des:
             return solution_path
 
