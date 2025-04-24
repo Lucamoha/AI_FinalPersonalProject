@@ -46,12 +46,15 @@ python main.py
 - Nhóm 1 - Uninformed Search: BFS, DFS, UCS, IDS
 - Nhóm 2 - Informed Search: A*, Greedy, Iterative Deepening A*
 - Nhóm 3 - Local Search: Simple Hill Climbing, Steepest Ascent Hill Climbing, Stochastic Hill Climbing, Simulated Annealing, Beam Search
-- Nhóm 4: Genetic, And-Or Graph Search
+- Nhóm 4 - Searching With Nondeterministic Actions: Genetic, And-Or Graph Search, Searching with No Observation, Searching with Partially Observation
+- Nhóm 5 - 
 
 ### Lưu ý
 - Một số thuật toán có thể mất nhiều thời gian để tìm ra lời giải hoặc không tìm được lời giải do đặc tính của thuật toán
 - Có thể điều chỉnh tốc độ hiển thị bằng cách thay đổi giá trị DELAY trong file main.py
 
+### Tài liệu tham khảo: 
+**Russell 2016 Artificial intelligence a modern approach**
 
 ## Trạng thái bắt đầu, trạng thái kết thúc minh họa:
 |Trạng thái bắt đầu|Trạng thái kết thúc|
@@ -78,6 +81,8 @@ python main.py
 - [IV. Searching With Nondeterministic Actions](#iv-searching-with-nondeterministic-actions)
   - [1. Genetic - Genetic Algorithm](#1-genetic---genetic-algorithm)
   - [2. AndOrGraphSearch – And-Or Graph Search](#2-andorgraphsearch--and-or-graph-search)
+  - [3. NoObservation - Searching with No Observation](#3-noobservation---searching-with-no-observation)
+  - [4. PartiallyObservation - Searching with Partially Observation](#4-partiallyobservation---searching-with-partially-observation)
 
 ## I. Uninformed Search Algorithms
 ### 1. bfs – Breadth-First Search
@@ -119,7 +124,15 @@ python main.py
 ### 4. SimAnn – Simulated Annealing
 **No Solution**
 ### 5. BeamSearch – Beam Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/d8fa8d87-895f-4796-976a-ac72d3520c6d)|<p>Time: 0.0038005000023986213s</p><p>Steps: 77</p>|
 
 ## IV. Searching With Nondeterministic Actions
 ### 1. Genetic - Genetic Algorithm
 ### 2. AndOrGraphSearch – And-Or Graph Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/b20a4fdd-c677-4462-9a82-6d05cb2092f6)|<p>Time: 0.653152200000477s</p><p>Steps: 31</p>|
+### 3. NoObservation - Searching with No Observation
+### 4. PartiallyObservation - Searching with Partially Observation
