@@ -2,6 +2,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
 import time
+from algorithm.utils import isSolvable, randomState, randomStateWithFixed
 from algorithm.BFS import bfs
 from algorithm.DFS import dfs
 from algorithm.UCS import ucs
@@ -16,11 +17,15 @@ from algorithm.SimulatedAnnealing import SimulatedAnnealing
 from algorithm.BeamSearch import BeamSearch
 from algorithm.Genetic import Genetic
 from algorithm.AndOrGraphSearch import AndOrGraphSearch
-
+from algorithm.NoObservationSearch import NoObservation
+from algorithm.PartiallyObservationSearch import PartiallyObservation
+from algorithm.Backtracking import Backtracking
 
 start = '265087431'
 des = '123456780'
 
+StartStateListRandomSize = 30
+DesStateListRandomSize = 10
 DELAY = 500 #ms
 totalTime = 0
 data = ""
@@ -79,17 +84,28 @@ class PuzzleWidget(QtWidgets.QWidget):
         totalTime = 0
         data = ""
 
-        self.solution = algorithm(start, des)
+        if algorithm == NoObservation or algorithm == PartiallyObservation:
+            StartStateList = randomState(StartStateListRandomSize)
+            DesStateList = randomState(DesStateListRandomSize) if algorithm == NoObservation else randomStateWithFixed(0, "123", DesStateListRandomSize)
+            self.solution = algorithm(StartStateList, DesStateList)
+            data = f"Belief Start State:\n"
+            data += ''.join(f"{i}{',\n' if (idx + 1) % 10 == 0 else ', '}" for idx, i in enumerate(StartStateList))
+            data = data[:-2]
+            data += "\nBelief Des State:\n"
+            data += ''.join(f"{i}{',\n' if (idx + 1) % 10 == 0 else ', '}" for idx, i in enumerate(DesStateList))
+            data = data[:-2] + "\n\n"
+        else:
+            if not isSolvable(start, des):
+                data = "No solution!"
+                return
+            self.solution = algorithm(start, des)
 
         if not self.solution:
-            data = "No solution!"
+            data += "No solution!"
             return
         
-        data = f"Time: {totalTime}s\nSteps: {len(self.solution) - 1}\nPath:\n"
-        t = 1
-        for i in self.solution:
-            data += (i + ("\n-> " if t % 9 == 0 else " -> "))
-            t += 1
+        data += f"Time: {totalTime}s\nSteps: {len(self.solution) - 1}\nPath:\n"
+        data += ''.join(f"{i}{'\n-> ' if (idx + 1) % 9 == 0 else ' -> '}" for idx, i in enumerate(self.solution))
         data = data[:-4]
         self.timer.start(DELAY)
 
@@ -112,7 +128,7 @@ class PuzzleWidget(QtWidgets.QWidget):
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 600)
+        MainWindow.resize(1100, 700)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -129,55 +145,64 @@ class Ui_MainWindow(object):
 
         # Tạo nút
         self.btBFS = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btBFS.setGeometry(QtCore.QRect(750, 20, 100, 30))
+        self.btBFS.setGeometry(QtCore.QRect(750, 50, 100, 30))
         self.btBFS.setObjectName("btBFS")
         self.btDFS = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btDFS.setGeometry(QtCore.QRect(870, 20, 100, 30))
+        self.btDFS.setGeometry(QtCore.QRect(870, 50, 100, 30))
         self.btDFS.setObjectName("btDFS")
         self.btUCS = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btUCS.setGeometry(QtCore.QRect(750, 70, 100, 30))
+        self.btUCS.setGeometry(QtCore.QRect(990, 50, 100, 30))
         self.btUCS.setObjectName("btUCS")
         self.btIDS = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btIDS.setGeometry(QtCore.QRect(870, 70, 100, 30))
+        self.btIDS.setGeometry(QtCore.QRect(750, 90, 100, 30))
         self.btIDS.setObjectName("btIDS")
         self.btAStar = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btAStar.setGeometry(QtCore.QRect(750, 120, 100, 30))
+        self.btAStar.setGeometry(QtCore.QRect(750, 165, 100, 30))
         self.btAStar.setObjectName("btAStar")
         self.btGreedy = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btGreedy.setGeometry(QtCore.QRect(870, 120, 100, 30))
+        self.btGreedy.setGeometry(QtCore.QRect(870, 165, 100, 30))
         self.btGreedy.setObjectName("btGreedy")
         self.btidaStar = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btidaStar.setGeometry(QtCore.QRect(750, 170, 100, 30))
+        self.btidaStar.setGeometry(QtCore.QRect(990, 165, 100, 30))
         self.btidaStar.setObjectName("btidaStar")
         self.btSimpleHC = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btSimpleHC.setGeometry(QtCore.QRect(870, 170, 100, 30))
+        self.btSimpleHC.setGeometry(QtCore.QRect(750, 280, 100, 30))
         self.btSimpleHC.setObjectName("btSimpleHC")
         self.btSAHC = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btSAHC.setGeometry(QtCore.QRect(750, 220, 100, 30))
+        self.btSAHC.setGeometry(QtCore.QRect(870, 280, 100, 30))
         self.btSAHC.setObjectName("btSAHC")
         self.btStochasticHC = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btStochasticHC.setGeometry(QtCore.QRect(870, 220, 100, 30))
+        self.btStochasticHC.setGeometry(QtCore.QRect(990, 280, 100, 30))
         self.btStochasticHC.setObjectName("btStochasticHC")
         self.btSimulatedAnnealing = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btSimulatedAnnealing.setGeometry(QtCore.QRect(750, 270, 100, 30))
+        self.btSimulatedAnnealing.setGeometry(QtCore.QRect(750, 320, 100, 30))
         self.btSimulatedAnnealing.setObjectName("btSimulatedAnnealing")
         self.btBeamSearch = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btBeamSearch.setGeometry(QtCore.QRect(870, 270, 100, 30))
+        self.btBeamSearch.setGeometry(QtCore.QRect(870, 320, 100, 30))
         self.btBeamSearch.setObjectName("btBeamSearch")
         self.btGenetic = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btGenetic.setGeometry(QtCore.QRect(750, 320, 100, 30))
+        self.btGenetic.setGeometry(QtCore.QRect(750, 395, 100, 30))
         self.btGenetic.setObjectName("btGenetic")
         self.btAndOrGS = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btAndOrGS.setGeometry(QtCore.QRect(870, 320, 100, 30))
+        self.btAndOrGS.setGeometry(QtCore.QRect(870, 395, 100, 30))
         self.btAndOrGS.setObjectName("btAndOrGS")
+        self.btNoObservation = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btNoObservation.setGeometry(QtCore.QRect(990, 395, 100, 30))
+        self.btNoObservation.setObjectName("btNoObservation")
+        self.btPartiallyObservation = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btPartiallyObservation.setGeometry(QtCore.QRect(750, 435, 100, 30))
+        self.btPartiallyObservation.setObjectName("btPartiallyObservation")
+        self.btBacktracking = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.btBacktracking.setGeometry(QtCore.QRect(750, 510, 100, 30))
+        self.btBacktracking.setObjectName("btBacktracking")
+
 
         self.btStop = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btStop.setGeometry(QtCore.QRect(870, 500, 100, 30))
+        self.btStop.setGeometry(QtCore.QRect(950, 650, 100, 30))
         self.btStop.setObjectName("btStop")
         self.btPath = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btPath.setGeometry(QtCore.QRect(750, 500, 100, 30))
+        self.btPath.setGeometry(QtCore.QRect(790, 650, 100, 30))
         self.btPath.setObjectName("btPath")
-        
         
 
         # Chức năng nút
@@ -195,36 +220,54 @@ class Ui_MainWindow(object):
         self.btBeamSearch.clicked.connect(lambda: (self.PuzzleWidget.solve(BeamSearch), self._update()))
         self.btGenetic.clicked.connect(lambda: (self.PuzzleWidget.solve(Genetic), self._update()))
         self.btAndOrGS.clicked.connect(lambda: (self.PuzzleWidget.solve(AndOrGraphSearch), self._update()))
+        self.btNoObservation.clicked.connect(lambda: (self.PuzzleWidget.solve(NoObservation), self._update(), self._hideObject()))
+        self.btPartiallyObservation.clicked.connect(lambda: (self.PuzzleWidget.solve(PartiallyObservation), self._update(), self._hideObject()))
+        self.btBacktracking.clicked.connect(lambda: (self.PuzzleWidget.solve(Backtracking), self._update()))
         self.btPath.clicked.connect(lambda: (luuPath(), self._update("Save to path.txt")))
         self.btStop.clicked.connect(self.PuzzleWidget.stop_solution)
 
 
         self.PathListView = QtWidgets.QListWidget(parent=self.centralwidget)
-        self.PathListView.setGeometry(QtCore.QRect(20, 390, 720, 190))
+        self.PathListView.setGeometry(QtCore.QRect(20, 390, 720, 290))
         self.PathListView.setObjectName("PathListView")
         self.PathListView.setViewMode(QtWidgets.QListView.ViewMode.ListMode)  
-        self.PathListView.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)  # Tắt cuộn ngang
         self.PathListView.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded) # Bật cuộn dọc nếu cần
 
-
-        self.labelStart = QtWidgets.QLabel(parent=self.centralwidget)
-        self.labelStart.setGeometry(QtCore.QRect(26, 15, 61, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
+        self.labelStart = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelStart.setGeometry(QtCore.QRect(26, 15, 61, 31))
         self.labelStart.setFont(font)
         self.labelStart.setObjectName("labelStart")
         self.labelDes = QtWidgets.QLabel(parent=self.centralwidget)
         self.labelDes.setGeometry(QtCore.QRect(26, 205, 61, 31))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(14)
-        font.setBold(True)
-        font.setWeight(75)
         self.labelDes.setFont(font)
         self.labelDes.setObjectName("labelDes")
+
+        self.labelNhom1 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelNhom1.setGeometry(QtCore.QRect(750, 15, 350, 31))
+        self.labelNhom1.setFont(font)
+        self.labelNhom1.setObjectName("labelNhom1")
+        self.labelNhom2 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelNhom2.setGeometry(QtCore.QRect(750, 130, 350, 31))
+        self.labelNhom2.setFont(font)
+        self.labelNhom2.setObjectName("labelNhom2")
+        self.labelNhom3 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelNhom3.setGeometry(QtCore.QRect(750, 245, 350, 31))
+        self.labelNhom3.setFont(font)
+        self.labelNhom3.setObjectName("labelNhom3")
+        self.labelNhom4 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelNhom4.setGeometry(QtCore.QRect(750, 360, 350, 31))
+        self.labelNhom4.setFont(font)
+        self.labelNhom4.setObjectName("labelNhom4")
+        self.labelNhom5 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.labelNhom5.setGeometry(QtCore.QRect(750, 475, 350, 31))
+        self.labelNhom5.setFont(font)
+        self.labelNhom5.setObjectName("labelNhom5")
+
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
@@ -254,6 +297,9 @@ class Ui_MainWindow(object):
         self.btSAHC.setStyleSheet(button_style)
         self.btGenetic.setStyleSheet(button_style)
         self.btAndOrGS.setStyleSheet(button_style)
+        self.btNoObservation.setStyleSheet(button_style)
+        self.btPartiallyObservation.setStyleSheet(button_style)
+        self.btBacktracking.setStyleSheet(button_style)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -277,10 +323,31 @@ class Ui_MainWindow(object):
         self.btBeamSearch.setText(_translate("MainWindow", "BeamSearch"))
         self.btGenetic.setText(_translate("MainWindow", "Genetic"))
         self.btAndOrGS.setText(_translate("MainWindow", "AndOrGS"))
+        self.btNoObservation.setText(_translate("MainWindow", "NOS"))
+        self.btPartiallyObservation.setText(_translate("MainWindow", "POS"))
+        self.btBacktracking.setText(_translate("MainWindow", "Backtracking"))
         self.labelStart.setText(_translate("MainWindow", "Start"))
         self.labelDes.setText(_translate("MainWindow", "Des"))
+        self.labelNhom1.setText(_translate("MainWindow", "Uninformed Search Algorithms:"))
+        self.labelNhom2.setText(_translate("MainWindow", "Informed Search Algorithms:"))
+        self.labelNhom3.setText(_translate("MainWindow", "Local Search Algorithms:"))
+        self.labelNhom4.setText(_translate("MainWindow", "Searching With Nondeterministic Actions:"))
+        self.labelNhom5.setText(_translate("MainWindow", "Nhóm 5:"))
     
+    def _hideObject(self):
+        self.StartPuzzleWidget.hide()
+        self.DesPuzzleWidget.hide()
+        self.labelStart.hide()
+        self.labelDes.hide()
+
+    def _showObject(self):
+        self.StartPuzzleWidget.show()
+        self.DesPuzzleWidget.show()
+        self.labelStart.show()
+        self.labelDes.show()
+
     def _update(self, text = ""):
+        self._showObject()
         global data
 
         if not text == "":
@@ -322,10 +389,13 @@ SAHC = timer(SAHC)
 StochasticHC = timer(StochasticHC)
 SimulatedAnnealing = timer(SimulatedAnnealing)
 BeamSearch = timer(BeamSearch)
-# Nhóm 4: 
+# Nhóm 4: Searching With Nondeterministic Actions
 Genetic = timer(Genetic)
 AndOrGraphSearch = timer(AndOrGraphSearch)
-
+NoObservation = timer(NoObservation)
+PartiallyObservation = timer(PartiallyObservation)
+# Nhóm 5:
+Backtracking = timer(Backtracking)
 
 if __name__ == "__main__":
     import sys
