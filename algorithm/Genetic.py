@@ -1,7 +1,7 @@
 from algorithm.utils import *
 import random
 
-def Genetic(start: str, des: str, population_size=100, max_generations=10000):
+def Genetic(start: str, des: str, population_size=100, max_generations=1000):
     def fitness(state):
         return sum(1 for i in range(9) if state[i] == des[i])
 
