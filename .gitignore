@@ -41,6 +41,7 @@ venv.bak/
 # Project specific
 path.txt
 *.log
+gif/
 
 # OS specific
 .DS_Store
