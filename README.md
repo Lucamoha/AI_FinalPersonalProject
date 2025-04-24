@@ -75,6 +75,9 @@ python main.py
   - [3. StochasticHC – Stochastic Hill Climbing](#3-stochastichc--stochastic-hill-climbing)
   - [4. SimAnn – Simulated Annealing](#4-simann--simulated-annealing)
   - [5. BeamSearch – Beam Search](#5-beamsearch--beam-search)
+- [IV. Searching With Nondeterministic Actions](#iv-searching-with-nondeterministic-actions)
+  - [1. Genetic - Genetic Algorithm](#1-genetic---genetic-algorithm)
+  - [2. AndOrGraphSearch – And-Or Graph Search](#2-andorgraphsearch--and-or-graph-search)
 
 ## I. Uninformed Search Algorithms
 ### 1. bfs – Breadth-First Search
@@ -116,3 +119,7 @@ python main.py
 ### 4. SimAnn – Simulated Annealing
 **No Solution**
 ### 5. BeamSearch – Beam Search
+
+## IV. Searching With Nondeterministic Actions
+### 1. Genetic - Genetic Algorithm
+### 2. AndOrGraphSearch – And-Or Graph Search
