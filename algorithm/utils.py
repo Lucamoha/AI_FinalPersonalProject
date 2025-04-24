@@ -32,6 +32,29 @@ def randomState(num: int = 10):
     
     return states
 
+def randomStateWithFixed(position: int, value: str, num: int = 10):
+    """
+    Tạo các trạng thái ngẫu nhiên với các số cố định ở vị trí chỉ định.
+    """
+    import random
+    
+    if position < 0 or position > 8 or position + len(value) > 9:
+        raise ValueError("Vị trí không hợp lệ hoặc chuỗi giá trị quá dài")
+    
+    states = []
+    remaining_digits = ''.join(d for d in '012345678' if d not in value)
+    
+    for _ in range(num):
+        remaining_list = list(remaining_digits)
+        random.shuffle(remaining_list)
+        
+        state_list = remaining_list[:position] + list(value) + remaining_list[position:]
+        state = ''.join(state_list[:9])
+        
+        states.append(state)
+    
+    return states
+
 def mahattan(i: int, start: str, des: str):
     x1, y1 = divmod(start.index(str(i)), 3)
     x2, y2 = divmod(des.index(str(i)), 3)
