@@ -20,7 +20,7 @@ def isSolvable(state: str, des: str = "123456780") -> bool:
     """
     return countInversions(state) % 2 == countInversions(des) % 2
 
-def randomState(num: int = 100, des: str = "123456780"):
+def randomState(num: int = 10):
     import random
     
     states = []
@@ -28,17 +28,6 @@ def randomState(num: int = 100, des: str = "123456780"):
         state = list('012345678')
         random.shuffle(state)
         state = ''.join(state)
-        
-        if not isSolvable(state, des):
-            # Tìm hai vị trí không chứa số 0
-            non_zero = [i for i, digit in enumerate(state) if digit != '0']
-            if len(non_zero) >= 2:
-                # Hoán đổi hai số để thay đổi tính chẵn lẻ của số nghịch đảo
-                pos1, pos2 = random.sample(non_zero, 2)
-                state_list = list(state)
-                state_list[pos1], state_list[pos2] = state_list[pos2], state_list[pos1]
-                state = ''.join(state_list)
-        
         states.append(state)
     
     return states
