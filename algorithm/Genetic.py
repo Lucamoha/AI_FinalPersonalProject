@@ -58,6 +58,8 @@ def Genetic(start: str, des: str, population_size=100, max_generations=1000):
                 if next_state not in parent_map:
                     parent_map[next_state] = path[-1]
                     visited.add(next_state)
+                else:
+                    break
                 path.append(next_state)
 
             new_population.append(path[-1])
