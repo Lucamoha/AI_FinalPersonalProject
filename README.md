@@ -35,7 +35,7 @@ python main.py
 - Phía dưới bên trái: Hiển thị trạng thái đích (Des)
 - Ở giữa: Hiển thị quá trình giải
 - Bên phải: Các nút bấm cho từng thuật toán
-- Phía dưới: Hiển thị kết quả (thời gian, số bước, đường đi)
+- Phía dưới: Hiển thị chi tiết
 
 3. Các chức năng:
 - Chọn một trong các thuật toán bằng cách nhấn vào nút tương ứng
@@ -120,6 +120,7 @@ Các thành phần chính của bài toán tìm kiếm:
 | ![](https://github.com/user-attachments/assets/b788ce8e-82a2-43ce-a537-f029e27a5c95)|<p>Time: 0.24040450004395097s</p><p>Steps: 27</p>|
 #### 5. Nhận xét
 ![](https://github.com/user-attachments/assets/66949811-f515-4bf6-a894-5c5411a55aad)
+
 **Trong số các thuật toán trong nhóm: BFS và UCS tìm ra lời giải tốt nhưng tốn thời gian và bộ nhớ. DFS không đáng tin cậy trong các bài toán như 8-puzzle. IDS là một lựa chọn cân bằng, với chi phí thời gian – bộ nhớ hợp lý hơn.**
 
 ### II. Informed Search Algorithms
@@ -145,7 +146,8 @@ Các thành phần chính của bài toán tìm kiếm:
 | ![](https://github.com/user-attachments/assets/a2ff7efb-32d7-42f1-add4-a798ecb408d1)|<p>Time: 0.018657599999983177s</p><p>Steps: 23</p>|
 #### 4. Nhận xét
 ![](https://github.com/user-attachments/assets/8725f26e-5430-4131-97f5-0f26a30f2e0f)
-**Nhìn chung, việc tối ưu về thời gian của các thuật toán trong nhóm Informed Search tốt hơn nhiều so với các thuật toán trong nhóm Uninformed Search. Greedy dù nhanh nhưng chưa tối ưu về số bước, hiệu quả lời giải thấp. IDA* có số bước thấp nhưng tối ưu thời gian chưa tốt nhất. A* là thuật toán ưu việt nhất trong nhóm này.**
+
+**Nhìn chung, việc tối ưu về thời gian của các thuật toán trong nhóm Informed Search tốt hơn nhiều so với các thuật toán trong nhóm Uninformed Search. Greedy dù nhanh nhưng chưa tối ưu về số bước, hiệu quả lời giải thấp. IDA\* có số bước thấp nhưng tối ưu thời gian chưa tốt nhất. A\* là thuật toán ưu việt nhất trong nhóm này.**
 
 ### III. Local Search Algorithms
 #### 1. SHC – Simple Hill Climbing
