@@ -30,7 +30,7 @@ python main.py
 ```
 
 2. Giao diện chương trình:
-![](https://github.com/user-attachments/assets/37315ffd-c1d2-4b36-a366-6ea50418ac46)
+![](https://github.com/user-attachments/assets/f4ec30b8-5ffa-4807-a823-b2288713da7a)
 - Phía trên bên trái: Hiển thị trạng thái bắt đầu (Start)
 - Phía dưới bên trái: Hiển thị trạng thái đích (Des)
 - Ở giữa: Hiển thị quá trình giải
@@ -47,7 +47,7 @@ python main.py
 - Nhóm 2 - Informed Search: A*, Greedy, Iterative Deepening A*
 - Nhóm 3 - Local Search: Simple Hill Climbing, Steepest Ascent Hill Climbing, Stochastic Hill Climbing, Simulated Annealing, Beam Search, Genetic
 - Nhóm 4 - Searching With Nondeterministic Actions: And-Or Graph Search, Searching with No Observation, Searching with Partially Observation
-- Nhóm 5 - Search In Constrained Environments: 
+- Nhóm 5 - Constraint Satisfaction: Backtracking, Test Search, AC-3
 - Nhóm 6 - Reinforcement Learning: Q-Learning
 
 ### Lưu ý
@@ -56,11 +56,6 @@ python main.py
 
 ### Tài liệu tham khảo: 
 **Russell 2016 Artificial intelligence a modern approach**
-
-## Trạng thái bắt đầu, trạng thái kết thúc minh họa:
-|Trạng thái bắt đầu|Trạng thái kết thúc|
-| :--- | :--- |
-| ![](https://github.com/user-attachments/assets/fe5efcee-6b20-48c7-9a6f-ba04268521a6) | ![](https://github.com/user-attachments/assets/7d3ef320-6683-4952-aaf0-5a59ef51c545) |
 
 ## Mục lục
 - [A. Mục tiêu](#a-mục-tiêu)
@@ -89,7 +84,11 @@ python main.py
     - [2. NoObservation - Searching with No Observation](#2-noobservation---searching-with-no-observation)
     - [3. PartiallyObservation - Searching with Partially Observation](#3-partiallyobservation---searching-with-partially-observation)
     - [4. Nhận xét](#4-nhận-xét-1)
-  - [V. Search In Constrained Environments](#v-search-in-constrained-environments)
+  - [V. Constraint Satisfaction](#v-constraint-satisfaction)
+    - [1. Backtracking](#1-backtracking)
+    - [2. Test Search](#2-test-search)
+    - [3. AC-3](#3-ac-3)
+    - [4. Nhận xét](#4-nhận-xét-2)
   - [VI. Reinforcement Learning](#vi-reinforcement-learning)
     - [1. QLearning - Q-Learning](#1-qlearning---q-learning)
     - [2. Nhận xét](#2-nhận-xét)
@@ -98,6 +97,13 @@ python main.py
 ## A. Mục tiêu
 ## B. Nội dung
 ### I. Uninformed Search Algorithms
+Trong phạm vi đề tài, các thuật toán tìm kiếm không có thông tin (Uninformed search) được sử dụng khi không có thông tin gì về khoảng cách đến đích (không dùng heuristic).
+Các thành phần chính của bài toán tìm kiếm:
+- Tập trạng thái: Tất cả các trạng thái hợp lệ của bảng 3x3 (với 8 ô số và 1 ô trống, không có số nào giống nhau)
+- Trạng thái bắt đầu
+- Tập hành động (Actions): Các thao tác di chuyển ô trống: Lên (Up), Xuống (Down), Trái (Left), Phải (Right)
+- Trạng thái đích
+- Solution (Lời giải): Lời giải là một dãy hành động dẫn từ trạng thái bắt đầu đến trạng thái đích.
 #### 1. bfs – Breadth-First Search
 |Các trạng thái|Hiệu suất thuật toán|
 | :--- | :--- |
@@ -113,8 +119,18 @@ python main.py
 | :--- | :--- |
 | ![](https://github.com/user-attachments/assets/b788ce8e-82a2-43ce-a537-f029e27a5c95)|<p>Time: 0.24040450004395097s</p><p>Steps: 27</p>|
 #### 5. Nhận xét
+![](https://github.com/user-attachments/assets/66949811-f515-4bf6-a894-5c5411a55aad)
+**Trong số các thuật toán trong nhóm: BFS và UCS tìm ra lời giải tốt nhưng tốn thời gian và bộ nhớ. DFS không đáng tin cậy trong các bài toán như 8-puzzle. IDS là một lựa chọn cân bằng, với chi phí thời gian – bộ nhớ hợp lý hơn.**
 
 ### II. Informed Search Algorithms
+Trong phạm vi đề tài, các thuật toán tìm kiếm có thông tin (Informed Search), ta ước lượng khoảng cách (chi phí) đến mục tiêu để việc tìm kiếm hiệu quả hơn
+Các thành phần chính của bài toán tìm kiếm:
+- Tập trạng thái: Tất cả các trạng thái hợp lệ của bảng 3x3 (với 8 ô số và 1 ô trống, không có số nào giống nhau)
+- Trạng thái bắt đầu
+- Tập hành động (Actions): Các thao tác di chuyển ô trống: Lên (Up), Xuống (Down), Trái (Left), Phải (Right)
+- Trạng thái đích
+- Solution (Lời giải): Lời giải là một dãy hành động dẫn từ trạng thái bắt đầu đến trạng thái đích.
+- Hàm heuristic: Ước lượng chi phí từ trạng thái hiện tại đến trạng thái đích
 #### 1. aStar – A* Search
 |Các trạng thái|Hiệu suất thuật toán|
 | :--- | :--- |
@@ -128,6 +144,8 @@ python main.py
 | :--- | :--- |
 | ![](https://github.com/user-attachments/assets/a2ff7efb-32d7-42f1-add4-a798ecb408d1)|<p>Time: 0.018657599999983177s</p><p>Steps: 23</p>|
 #### 4. Nhận xét
+![](https://github.com/user-attachments/assets/8725f26e-5430-4131-97f5-0f26a30f2e0f)
+**Nhìn chung, việc tối ưu về thời gian của các thuật toán trong nhóm Informed Search tốt hơn nhiều so với các thuật toán trong nhóm Uninformed Search. Greedy dù nhanh nhưng chưa tối ưu về số bước, hiệu quả lời giải thấp. IDA* có số bước thấp nhưng tối ưu thời gian chưa tốt nhất. A* là thuật toán ưu việt nhất trong nhóm này.**
 
 ### III. Local Search Algorithms
 #### 1. SHC – Simple Hill Climbing
@@ -155,8 +173,11 @@ python main.py
 #### 3. PartiallyObservation - Searching with Partially Observation
 #### 4. Nhận xét
 
-### V. Search In Constrained Environments
+### V. Constraint Satisfaction
 #### 1. Backtracking
+#### 2. Test Search
+#### 3. AC-3
+#### 4. Nhận xét
 
 ### VI. Reinforcement Learning
 #### 1. QLearning - Q-Learning
