@@ -1,8 +1,4 @@
 # AI_FinalPersonalProject
-
-## Giới thiệu
-Dự án nhằm mục tiêu nghiên cứu, đánh giá hiệu suất và triển khai các thuật toán tìm kiếm để giải bài toán cổ điển **8-puzzle** – một trò chơi logic với mục tiêu sắp xếp lại các ô số từ trạng thái ban đầu về trạng thái đích thông qua các phép di chuyển hợp lệ.
-Giao diện đồ họa (GUI) được xây dựng bằng thư viện **PyQt6**.
 > Dự án được hoàn thiện bởi [Trần Triều Dương](https://github.com/Lucamoha)
 
 ## Hướng dẫn cài đặt và sử dụng
@@ -95,15 +91,17 @@ python main.py
 - [C. Kết luận](#c-kết-luận)
 
 ## A. Mục tiêu
+Dự án nhằm mục tiêu nghiên cứu, đánh giá hiệu suất và triển khai các thuật toán tìm kiếm để giải bài toán cổ điển **8-puzzle**
 ## B. Nội dung
 ### I. Uninformed Search Algorithms
 Trong phạm vi đề tài, các thuật toán tìm kiếm không có thông tin (Uninformed search) được sử dụng khi không có thông tin gì về khoảng cách đến đích (không dùng heuristic).
 Các thành phần chính của bài toán tìm kiếm:
+|Trạng thái bắt đầu|Trạng thái kết thúc|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/fe5efcee-6b20-48c7-9a6f-ba04268521a6) | ![](https://github.com/user-attachments/assets/7d3ef320-6683-4952-aaf0-5a59ef51c545) |
 - Tập trạng thái: Tất cả các trạng thái hợp lệ của bảng 3x3 (với 8 ô số và 1 ô trống, không có số nào giống nhau)
-- Trạng thái bắt đầu
 - Tập hành động (Actions): Các thao tác di chuyển ô trống: Lên (Up), Xuống (Down), Trái (Left), Phải (Right)
-- Trạng thái đích
-- Solution (Lời giải): Lời giải là một dãy hành động dẫn từ trạng thái bắt đầu đến trạng thái đích.
+- Solution (Lời giải): Lời giải là một dãy các trạng thái hợp lệ dẫn từ trạng thái bắt đầu đến trạng thái đích.
 #### 1. bfs – Breadth-First Search
 |Các trạng thái|Hiệu suất thuật toán|
 | :--- | :--- |
@@ -126,11 +124,12 @@ Các thành phần chính của bài toán tìm kiếm:
 ### II. Informed Search Algorithms
 Trong phạm vi đề tài, các thuật toán tìm kiếm có thông tin (Informed Search), ta ước lượng khoảng cách (chi phí) đến mục tiêu để việc tìm kiếm hiệu quả hơn
 Các thành phần chính của bài toán tìm kiếm:
+|Trạng thái bắt đầu|Trạng thái kết thúc|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/fe5efcee-6b20-48c7-9a6f-ba04268521a6) | ![](https://github.com/user-attachments/assets/7d3ef320-6683-4952-aaf0-5a59ef51c545) |
 - Tập trạng thái: Tất cả các trạng thái hợp lệ của bảng 3x3 (với 8 ô số và 1 ô trống, không có số nào giống nhau)
-- Trạng thái bắt đầu
 - Tập hành động (Actions): Các thao tác di chuyển ô trống: Lên (Up), Xuống (Down), Trái (Left), Phải (Right)
-- Trạng thái đích
-- Solution (Lời giải): Lời giải là một dãy hành động dẫn từ trạng thái bắt đầu đến trạng thái đích.
+- Solution (Lời giải): Lời giải là một dãy các trạng thái hợp lệ dẫn từ trạng thái bắt đầu đến trạng thái đích.
 - Hàm heuristic: Ước lượng chi phí từ trạng thái hiện tại đến trạng thái đích
 #### 1. aStar – A* Search
 |Các trạng thái|Hiệu suất thuật toán|
@@ -165,6 +164,7 @@ Các thành phần chính của bài toán tìm kiếm:
 #### 6. Genetic - Genetic Algorithm
 **No Solution**
 #### 7. Nhận xét
+**Các thuật toán trong nhóm Local Search không phù hợp để giải bài toán 8-puzzle do không gian tìm kiếm có thể dẫn đến local optima. Chỉ một số thuật toán như Beam Search có thể đưa ra lời giải nhưng vẫn chưa tối ưu.**
 
 ### IV. Searching With Nondeterministic Actions
 #### 1. AndOrGraphSearch – And-Or Graph Search
@@ -172,17 +172,61 @@ Các thành phần chính của bài toán tìm kiếm:
 | :--- | :--- |
 | ![](https://github.com/user-attachments/assets/b20a4fdd-c677-4462-9a82-6d05cb2092f6)|<p>Time: 0.653152200000477s</p><p>Steps: 31</p>|
 #### 2. NoObservation - Searching with No Observation
+Belief Start State:
+428013756, 382107564, 067312548, 603745128, 370246851, 683470215, 732854061, 105462873, 164327508, 402763581, 081635427, 043862517, 253076841, 687415320, 635812704, 671085243, 026487153, 625740381, 876521403, 673510842, 543627018, 248610537, 480213675, 162408735, 148237605, 763584021, 236417580, 458120376, 067241853, 841507623
+
+Belief Des State:
+835024671, 283405176, 018762345, 406318572, 085763412, 640581273, 023158647, 520638714, 156087423, 370562814
+
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/98e59049-915e-485f-b341-6ae4984cc0cd)|<p>Time: 0.03213900001719594s</p><p>Steps: 9</p>|
 #### 3. PartiallyObservation - Searching with Partially Observation
+Belief Start State:
+321864075, 451280637, 352741860, 120783546, 145327086, 238167540, 541082763, 142670385, 801235746, 081245673, 831472560, 286451730, 765412038, 416372058, 087135624, 751603248, 083514672, 534721086, 210457683, 356148207, 753486102, 370418256, 083251467, 748156023, 128307465, 234807615, 342085176, 632580147, 231607845, 523168470
+
+Belief Des State:
+123057684, 123574806, 123086475, 123560487, 123560847, 123460875, 123605748, 123567408, 123574806, 123067584
+
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/f310a1be-85a1-4643-b040-75fbd628dd17)|<p>Time: 0.00037960000918246806s</p><p>Steps: 8</p>|
 #### 4. Nhận xét
+**Trong môi trường có tính bất định, khả năng quan sát (dù chỉ một phần) đóng vai trò rất lớn trong việc rút ngắn thời gian và nâng cao hiệu quả lời giải. Ngoài ra, chất lượng lời giải còn phụ thuộc vào chất lượng belief state.**
 
 ### V. Constraint Satisfaction
+Biến: 1 ô là 1 số nguyên
+Miền: Tập hợp các giá trị có thể có của 1 biến: 0->8
+Ràng buộc: 1 số không thể xuất hiện 2 lần
+
+**Lưu ý:** Có thể điều chỉnh ràng buộc của các biến trong algorithm\\Constraint.json
 #### 1. Backtracking
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/f7c52042-dee1-4841-9abd-ba62b7dd199e)|<p>Time: 9.129999671131372e-05s</p><p>Steps: 8</p>|
 #### 2. Test Search
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/a9788fa4-02fa-42de-8f0f-bdab7285acee)|<p>Time: 0.0033423999848309904s</p><p>Steps: 354</p>|
+
+*Do tính chất của thuật toán nên thời gian và số bước có thể khác nhiều*
 #### 3. AC-3
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/ee0952c7-4be6-48d1-aef1-c39fb21a8c12)|<p>Time: 0.0010409000096842647s</p><p>Steps: 8</p>|
 #### 4. Nhận xét
+![Image](https://github.com/user-attachments/assets/8a0b2e9e-a49f-497b-9f10-42ee47c9395d)
 
 ### VI. Reinforcement Learning
+**Reinforcement Learning (RL) – học tăng cường:** một tác nhân (agent) học cách đưa ra quyết định thông qua tương tác với môi trường và nhận được phần thưởng (reward) hoặc hình phạt (penalty) sau mỗi hành động. Khác với các thuật toán tìm kiếm truyền thống vốn dựa vào mô hình rõ ràng về môi trường, RL hướng đến việc học thông qua thử – sai, và dần dần rút ra chính sách tối ưu.
 #### 1. QLearning - Q-Learning
+|Các trạng thái|Hiệu suất thuật toán|
+| :--- | :--- |
+| ![](https://github.com/user-attachments/assets/b5458a01-fff2-4ec7-8754-12d44d804c27)|<p>Time: 0.0013556999911088496s</p><p>Steps: 23</p>|
 #### 2. Nhận xét
+**Trải qua một quá trình huấn luyện đúng cách, Q-Learning đưa ra lời giải với thời gian nhanh (~0.00135s) và số bước tối ưu (23 bước), có thể so sánh được với với các thuật toán heuristic mạnh như A\***
 
 ## C. Kết luận
+**Qua quá trình triển khai và đánh giá, dự án đã thực hiện thành công việc áp dụng nhiều nhóm thuật toán trí tuệ nhân tạo để giải bài toán cổ điển 8-puzzle, từ đó rút ra nhiều nhận định quan trọng về hiệu suất và đặc điểm của từng nhóm thuật toán.**
+
+**Dự án không chỉ củng cố kiến thức về thuật toán tìm kiếm mà còn mở rộng tầm nhìn về cách thức vận dụng AI trong các bài toán ra quyết định và tối ưu hóa trong thực tế.**
