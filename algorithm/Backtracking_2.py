@@ -1,32 +1,32 @@
+import json
+
+with open('algorithm\\Constraint.json', 'r', encoding='utf-8') as file:
+    constraint = json.load(file)
+
 def _is_valid(state: str):
-    if not all(0 <= int(i) <= 8 for i in state):
+    if not all(constraint["domains"][f"{i + 1}"]["min"] <= int(state[i]) <= constraint["domains"][f"{i + 1}"]["max"] for i in range(len(state))):
         return False
-    if len(set(state)) != 9:
+    if constraint["unique"] and len(set(state)) != 9:
         return False
     return True
 
-def _Recursive_Backtracking(state: str, domains: set, des: str):
-    if state == des:
+def _Recursive_Backtracking(state: str):
+    if _is_valid(state):
         return [state]
     
-    for Var in domains:
-        for index in range(len(state)):
-            if state[index] == '0':
-                new_state = state[:index] + str(Var) + state[index + 1:]
-                domains.discard(Var)
-                result = _Recursive_Backtracking(new_state, domains, des)
+    for index in range(len(state)):
+        if state[index] == '0':
+            domains = range(constraint["domains"][f"{index + 1}"]["min"], constraint["domains"][f"{index + 1}"]["max"] + 1)
+            for k in domains:
+                if constraint["unique"] and str(k) in state:
+                    continue
+                new_state = state[:index] + str(k) + state[index + 1:]
+                result = _Recursive_Backtracking(new_state)
                 if result:
                     return [state] + result
-                domains.add(Var)
+            break
     
     return []
 
 def Backtracking(start: str, des: str):
-    if not _is_valid(des):
-        return []
-    
-    domains = {1, 2, 3, 4, 5, 6, 7, 8}
-    des = des
-    state = '000000000'
-
-    return _Recursive_Backtracking(state, domains, des)
+    return _Recursive_Backtracking('000000000')
