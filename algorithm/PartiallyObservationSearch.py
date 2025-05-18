@@ -29,7 +29,7 @@ def PartiallyObservation(StartStateList: list[str], DesStateList: list[str]):
 
         for state in current_belief:
             if isGoal(state):
-                return path + [state]
+                return path
 
         for move in moves:
             new_belief = []
