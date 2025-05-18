@@ -68,4 +68,6 @@ def Backtracking_AC3(start: str, des: str):
     ac3(domains, arcs)  # Rút gọn ban đầu
     path = []
     backtrack({}, domains, path)
-    return path
+    if path:
+        return path[1:]
+    return []
